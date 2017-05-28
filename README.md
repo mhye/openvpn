@@ -40,7 +40,7 @@ wget https://raw.githubusercontent.com/mhye/openvpn/master/script/client.sh
 2. 修改节点开启路由转发
 编辑`/etc/sysctl.conf`，设置`net.ipv4.ip_forward = 1`,使设置即刻生效
 ```
-systemctl -p
+sysctl -p
 ```
 3. 编辑修改设置静态ip
 编辑`/etc/network/interfaces`,设置静态ip，模板大致类似于
@@ -55,6 +55,4 @@ iface eth0 inet static
 关闭eth0接口的dhcp获取，或者直接禁用dhcpcd
 ```
 sudo echo "denyinterfaces eth0">>/etc/dhcpcd.conf
-```
-
 ```
