@@ -4,8 +4,8 @@ openvpn for raspberry
 ### 服务端准备
 1. 证书生成
 ```
-source .vars
-./build-keys clientname
+source vars
+./build-key clientname
 ```
 2. 导出配置文件
 ```
@@ -30,9 +30,31 @@ iroute 192.168.200.0 255.255.255.0#告诉服务器这个节点是这个网段
 push "route 192.168.2.0 255.255.255.0"#向该节点推送其他网段的信息
 ```
 ### 节点准备
-1. 安装openvpn，获取前面生成的配置文件
+1. 安装openvpn，获取前面生成的配置文件，放置到/etc/openvpn/
+并且下载客户端脚本
+```
+cd /etc/openvpn
+wget https://raw.githubusercontent.com/mhye/openvpn/master/script/client.sh
+
+```
 2. 修改节点开启路由转发
 编辑`/etc/sysctl.conf`，设置`net.ipv4.ip_forward = 1`,使设置即刻生效
 ```
 systemctl -p
+```
+3. 编辑修改设置静态ip
+编辑`/etc/network/interfaces`,设置静态ip，模板大致类似于
+```
+auto eth0
+iface eth0 inet static
+        netmask 255.255.255.0
+        address 192.168.x.x
+        gateway 192.168.x.1
+        dns-nameservers 223.5.5.5 114.114.114.114
+```
+关闭eth0接口的dhcp获取，或者直接禁用dhcpcd
+```
+sudo echo "denyinterfaces eth0">>/etc/dhcpcd.conf
+```
+
 ```
